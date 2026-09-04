@@ -1,0 +1,41 @@
+name: Setup Inno Setup 7
+description: Install the Inno Setup 7.
+author: 鸭鸭「カモ」
+
+branding:
+  color: yellow
+  icon: book
+
+runs:
+  using: composite
+  steps:
+    - name: Report an error and exit if not running on Windows
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |-
+        echo "This action only runs on Windows." >&2
+        exit 120  # ERROR_CALL_NOT_IMPLEMENTED
+
+    - name: Uninstall Inno Setup 6
+      shell: pwsh
+      run: |-
+        Write-OutPut "[INFO] Uninstalling Inno Setup 6 ..."
+        choco uninstall innosetup
+        # If you uninstall it using WinGet here,
+        # the "iscc" will later become "C:\ProgramData\Chocolatey\bin\ISCC.exe"
+        # Then report the error:
+        # Cannot find file at 'c:\program files (x86)\inno setup 6\iscc.exe' (c:\program files (x86)\inno setup 6\iscc.exe). This usually indicates a missing or moved file.
+
+    - name: Install Inno Setup 7
+      shell: pwsh
+      run: |-
+        Write-OutPut "[INFO] Installing Inno Setup 7 ..."
+        winget install --id JRSoftware.InnoSetup.7 --scope machine -s winget -e
+        # Looks like InnoSetup 7 isn't available on Chocolatey.
+        # https://community.chocolatey.org/packages?q=innosetup
+
+    - name: Update shell PATH
+      shell: pwsh
+      run: |-
+        Write-OutPut "[INFO] Updating PATH"
+        "C:\Program Files\Inno Setup 7\" | Out-File -FilePath "$env:GITHUB_PATH" -Append
