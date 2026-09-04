@@ -3,8 +3,8 @@ description: Install the Inno Setup 7.
 author: 鸭鸭「カモ」
 
 branding:
-  color: yellow
-  icon: book
+  color: blue
+  icon: download
 
 runs:
   using: composite
